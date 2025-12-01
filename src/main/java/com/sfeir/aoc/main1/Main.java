@@ -13,6 +13,5 @@ public class Main {
             locker.move(line);
         }
         System.out.println(locker.getZero());
-
     }
 }
