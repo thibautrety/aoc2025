@@ -7,8 +7,6 @@ public class Locker {
         this.current = initial;
     }
 
-
-
     public void move(String instruction){
         int sign = instruction.charAt(0)=='R' ? 1 : -1;
         int delta = Integer.parseInt(instruction.substring(1));
