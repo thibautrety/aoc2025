@@ -4,6 +4,7 @@ import com.sfeir.aoc.utils.ReadFile;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 public class Main02 {
     public static void main(String[] args) {
@@ -20,28 +21,31 @@ public class Main02 {
             long end = Long.parseLong(endAsString);
             for(long current=start; current<=end; current++){
                 var currentAsString = Long.toString(current);
-                int divider = 2;
-                int digitsCount = currentAsString.length() / divider;
-                while(divider<=currentAsString.length()){
-                    if(currentAsString.length()%divider !=0){
-                        divider ++;
-                        digitsCount = currentAsString.length() / divider;
-                        continue;
-                    }
-                    Set<String> elements = new HashSet<>();
-                    for(int j=0; j<=currentAsString.length()-digitsCount;j+=digitsCount){
-                        var element = currentAsString.substring(j, j+digitsCount);
-                        elements.add(element);
-
-                    }
-                    if(elements.size() == 1){
-                        System.out.println(current);
-                        result+=current;
-                        break;
-                    }
-                    divider ++;
-                    digitsCount = currentAsString.length() / divider;
+                if(Pattern.matches("([0-9]+)\\1+", currentAsString)) {
+                    result += current;
                 }
+//                int divider = 2;
+//                int digitsCount = currentAsString.length() / divider;
+//                while(divider<=currentAsString.length()){
+//                    if(currentAsString.length()%divider !=0){
+//                        divider ++;
+//                        digitsCount = currentAsString.length() / divider;
+//                        continue;
+//                    }
+//                    Set<String> elements = new HashSet<>();
+//                    for(int j=0; j<=currentAsString.length()-digitsCount;j+=digitsCount){
+//                        var element = currentAsString.substring(j, j+digitsCount);
+//                        elements.add(element);
+//
+//                    }
+//                    if(elements.size() == 1){
+//                        System.out.println(current);
+//                        result+=current;
+//                        break;
+//                    }
+//                    divider ++;
+//                    digitsCount = currentAsString.length() / divider;
+//                }
             }
         }
         System.out.println("---------------");
