@@ -76,13 +76,6 @@ public class Main02 {
 
         var result = new BigInteger(""+(char)firstChar+(char)secondChar+(char)char3+(char)char4+(char)char5+(char)char6+(char)char7+(char)char8+(char)char9+(char)char10+(char)char11+(char)char12);
 
-//        for(int i=0; i<line.length(); i++){
-//            var first = line.charAt(i)+"";
-//            var remaining = handleNJoltage(line.substring(i+1), n-1);
-//            String remaingingAsString = remaining.toString();
-//            var current = new BigInteger(first+remaingingAsString);
-//            max = current.compareTo(max)<0 ? max: current;
-//        }
         return result;
     }
 
