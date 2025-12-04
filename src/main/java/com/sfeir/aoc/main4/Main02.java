@@ -6,18 +6,18 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class Main02 {
-    public static void main(String[] args) {
+    public static void main() {
 
         String fileName = "src/main/resources/input_04.txt";
         char[][] grid= ReadFile.readGrid(fileName);
-        var coords = getCount(grid);
+        var coords = getCoords(grid);
         int coordCount = coords.size();
         var result = coordCount;
         while(coordCount>0){
             for(var coord : coords){
                 grid[coord.i()][coord.j()]='.';
             }
-            coords = getCount(grid);
+            coords = getCoords(grid);
             coordCount = coords.size();
             result += coordCount;
         }
@@ -25,8 +25,7 @@ public class Main02 {
         System.out.println(result);
     }
 
-    private static Set<Coord> getCount(char[][] grid) {
-        int count=0;
+    private static Set<Coord> getCoords(char[][] grid) {
         Set<Coord> coords = new HashSet<>();
         for(int i = 0; i< grid.length; i++) {
             for (int j = 0; j < grid[i].length; j++) {
@@ -61,7 +60,6 @@ public class Main02 {
 
                    if(adj<4){
                        coords.add(new Coord(i,j));
-                       count++;
                    }
                 }
             }
