@@ -43,11 +43,6 @@ public class Main02 {
                 result += Math.max(0, coord.j()- maxEnd);
                 maxEnd = coord.j();
             }
-//            else if(maxEnd >= coord.j()){
-//                // contained range
-//            }
-
-
         }
         System.out.println(result);
     }
