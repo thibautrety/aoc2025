@@ -8,9 +8,9 @@ public class Main {
         var result = GraphBuilder.dijkstraBuildGraph("src/main/resources/dijsktra_example.txt", 13, 1, 1, 13, '#');
         char[][] grid = ReadFile.readGrid("src/main/resources/dijsktra_example.txt");
         System.out.println(result.distance);
-        while (result.parent != null) {
+        while (!result.parents.isEmpty()) {
             grid[result.coord.j()][result.coord.i()] = '@';
-            result = result.parent;
+            result = result.parents.iterator().next();
         }
         for (int i = 0; i < grid.length; i++) {
             for (int j = 0; j < grid[i].length; j++) {

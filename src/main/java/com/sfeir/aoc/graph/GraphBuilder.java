@@ -27,7 +27,7 @@ public class GraphBuilder {
                 double newDist = currentNode.distance + edge.cost;
                 if(newDist < neighbor.distance){
                     neighbor.distance = newDist;
-                    neighbor.parent = currentNode;
+                    neighbor.parents.add(currentNode);
                     toHandle.remove(neighbor);
                     toHandle.add(neighbor);
                 }
@@ -75,5 +75,44 @@ public class GraphBuilder {
             }
         }
         return visited.get(new Coord(startI, startJ));
+    }
+    public static Map<Coord, Node> buildMazeMap(char[][] input,int startI, int startJ,  char wall){
+        int rows = input.length;
+        int cols = input[0].length;
+        Map<Coord, Node> visited = new HashMap<>();
+        for(int r=0; r<rows; r++){
+            for(int c=0; c<cols; c++){
+                if(input[r][c] != wall){
+                    Node node = new Node(c,r);
+                    if(!visited.containsKey(node.coord)) {
+                        visited.put(node.coord, node);
+                    }
+                }
+            }
+        }
+
+        for(Node node : visited.values()){
+            var currentCoord = node.coord;
+            Coord left = new Coord(currentCoord.i() - 1, currentCoord.j());
+            if(visited.containsKey(left)){
+                node.edges.add(new Edge(visited.get(left),1.0));
+            }
+
+            Coord right = new Coord(currentCoord.i() + 1, currentCoord.j());
+            if(visited.containsKey(right)){
+                node.edges.add(new Edge(visited.get(right),1.0));
+            }
+
+            Coord bottom = new Coord(currentCoord.i(), currentCoord.j()+1);
+            if(visited.containsKey(bottom)){
+                node.edges.add(new Edge(visited.get(bottom),1.0));
+            }
+
+            Coord up = new Coord(currentCoord.i(), currentCoord.j()-1);
+            if(visited.containsKey(up)){
+                node.edges.add(new Edge(visited.get(up),1.0));
+            }
+        }
+        return visited;
     }
 }

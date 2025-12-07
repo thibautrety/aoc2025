@@ -17,7 +17,7 @@ public class ReadFile {
     public static char[][] readGrid(String fileName) {
         try{
             var lines = Files.readAllLines(Path.of(fileName));
-            char [][] result = new char[lines.size()][lines.getFirst().length()];
+            char [][] result = new char[lines.getFirst().length()][lines.size()];
             for(int j = 0; j<lines.size(); j++){
                 for(int i = 0; i<lines.get(j).length(); i++){
                     result[i][j] = lines.get(j).charAt(i);
