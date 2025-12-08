@@ -12,7 +12,7 @@ public class Node {
     public List<Edge> edges;
     public double distance;
     public Set<Node> parents;
-    public long count;
+    public long cost;
 
     public Node(int i, int j){
         this.name = i+";"+j;
@@ -20,21 +20,20 @@ public class Node {
         this.distance = Double.MAX_VALUE;
         this.parents = new HashSet<>();
         this.coord = new Coord(i,j);
-        count = 1l;
+        cost = 1L;
+    }
+
+    public Node(Coord coord){
+        this(coord.i(), coord.j());
     }
 
     public void addParent(Node parent){
         this.parents.add(parent);
-        count = parents.stream().mapToLong(n -> n.count).sum();
+        cost = parents.stream().mapToLong(n -> n.cost).sum();
     }
 
-    public int getCost(){
-        if(parents.isEmpty()){
-            return 1;
-        }
-        else{
-            return parents.stream().mapToInt(Node::getCost).sum();
-        }
+    public long getCost(){
+        return cost;
     }
 
     @Override
@@ -52,12 +51,5 @@ public class Node {
     @Override
     public int hashCode() {
         return Objects.hashCode(coord);
-    }
-
-    public void increment(int value) {
-        count += value;
-        for(Edge edge : edges){
-            edge.target.increment(value);
-        }
     }
 }
