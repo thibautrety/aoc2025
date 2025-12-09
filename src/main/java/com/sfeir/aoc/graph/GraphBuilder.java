@@ -9,11 +9,11 @@ import java.util.Queue;
 public class GraphBuilder {
 
     public static Node buildGraph(String filename, int startI, int startJ, char wall){
-        return buildMaze(ReadFile.readGrid(filename),startI,startJ, wall);
+        return buildMaze(ReadFile.readGridReverse(filename),startI,startJ, wall);
     }
 
     public static Node dijkstraBuildGraph(String filename, int startI, int startJ, int endI, int endJ, char wall){
-        var currentNode = buildMaze(ReadFile.readGrid(filename),startI,startJ, wall);
+        var currentNode = buildMaze(ReadFile.readGridReverse(filename),startI,startJ, wall);
         currentNode.distance = 0.0;
         Queue<Node> toHandle = new LinkedList<>();
         toHandle.add(currentNode);
@@ -44,7 +44,7 @@ public class GraphBuilder {
         for(int r=0; r<rows; r++){
             for(int c=0; c<cols; c++){
                 if(input[r][c] != wall){
-                    Node node = new Node(c,r);
+                    Node node = new Node(r,c);
                     if(!visited.containsKey(node.coord)) {
                         visited.put(node.coord, node);
                     }
