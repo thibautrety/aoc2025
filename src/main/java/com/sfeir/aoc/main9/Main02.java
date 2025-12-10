@@ -3,6 +3,7 @@ package com.sfeir.aoc.main9;
 import com.sfeir.aoc.graph.Coord;
 import com.sfeir.aoc.utils.ReadFile;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -11,14 +12,115 @@ import java.util.Set;
 
 public class Main02 {
     public static void main() {
-        compute("src/main/resources/input_09example.txt", 10);
+//        compute("src/main/resources/input_09example.txt", 10, true);
         var startTime = System.currentTimeMillis();
-        compute("src/main/resources/input_09.txt", 1000);
+        compute("src/main/resources/input_09.txt", 1000, false);
         var endTime = System.currentTimeMillis();
         System.out.println("Execution time: " + (endTime - startTime) + " ms");
+        //1796555872
+        //1284556727
+        //1671059740
+        // 1671059740
+        //1670952834
+        // 1665698145
     }
 
-    private static void compute(String fileName, int shortedCount) {
+    private static Coord findWhiteRabbitUp(List<Coord> coords, Set<Coord> isGreen){
+        int minI = coords.stream().mapToInt(Coord::i).min().getAsInt();
+        int minJ = coords.stream().mapToInt(Coord::j).min().getAsInt();
+        Coord initial = new Coord(minI, minJ);
+        while(!isGreen.contains(initial)){
+            initial = new Coord(initial.i(), initial.j()+1);
+        }
+        while(isGreen.contains(initial)){
+            initial = new Coord(initial.i()+1, initial.j());
+        }
+        while(!isGreen.contains(initial)){
+            initial = new Coord(initial.i()+1, initial.j());
+        }
+
+        while(isGreen.contains(initial)){
+            initial = new Coord(initial.i(), initial.j()+1);
+        }
+
+        Coord initial2 = new Coord(initial.i()-1, initial.j());
+        while(isGreen.contains(initial2)){
+            initial2 = new Coord(initial2.i()-1, initial2.j());
+        }
+        while(!isGreen.contains(initial2)){
+            initial2 = new Coord(initial2.i()-1, initial2.j());
+        }
+
+        Coord initial3 = new Coord(initial2.i(), initial2.j());
+        while(isGreen.contains(initial3)){
+            initial3 = new Coord(initial3.i(), initial3.j()-1);
+        }
+        while(!isGreen.contains(initial3)){
+            initial3 = new Coord(initial3.i(), initial3.j()-1);
+        }
+        while(isGreen.contains(initial3)){
+            initial3 = new Coord(initial3.i(), initial3.j()-1);
+        }
+
+        System.out.println("FINAAAAL " + getRectangleArea(initial, initial3));
+        System.out.println("FINAAAAL " + initial.reverse() + initial3.reverse());
+
+
+        return initial;
+    }
+
+    private static Coord findWhiteRabbitDown(List<Coord> coords, Set<Coord> isGreen){
+        int maxI = coords.stream().mapToInt(Coord::i).max().getAsInt();
+        int maxJ = coords.stream().mapToInt(Coord::j).max().getAsInt();
+        Coord initial = new Coord(maxI, maxJ);
+        while(!isGreen.contains(initial)){
+            initial = new Coord(initial.i(), initial.j()-1);
+        }
+        while(isGreen.contains(initial)){
+            initial = new Coord(initial.i()-1, initial.j());
+        }
+        while(!isGreen.contains(initial)){
+            initial = new Coord(initial.i()-1, initial.j());
+        }
+
+        while(isGreen.contains(initial)){
+            initial = new Coord(initial.i(), initial.j()+1);
+        }
+        initial = new Coord(initial.i(), initial.j()-1);
+
+
+        Coord initial2 = new Coord(initial.i()+1, initial.j());
+        while(isGreen.contains(initial2)){
+            initial2 = new Coord(initial2.i()+1, initial2.j());
+        }
+        while(!isGreen.contains(initial2)){
+            initial2 = new Coord(initial2.i()+1, initial2.j());
+        }
+
+        Coord initial3 = new Coord(initial2.i(), initial2.j());
+        while(isGreen.contains(initial3)){
+            initial3 = new Coord(initial3.i(), initial3.j()-1);
+        }
+        while(!isGreen.contains(initial3)){
+            initial3 = new Coord(initial3.i(), initial3.j()-1);
+        }
+
+//        while(isGreen.contains(initial3)){
+//            initial3 = new Coord(initial3.i(), initial3.j()-1);
+//        }
+//
+        while(!coords.contains(initial3)){
+            initial3 = new Coord(initial3.i()-1, initial3.j());
+        }
+
+        System.out.println("FINAAAAL DOWN " + getRectangleArea(initial, initial3));
+        System.out.println("FINAAAAL DOWN " + initial.reverse() +"; " + new Coord(initial3.i(), initial.j()).reverse() +";"+ initial3.reverse() + ";"+new Coord(initial.i(), initial3.j()).reverse());
+
+
+        return initial;
+    }
+
+    private static void compute(String fileName, int shortedCount, boolean display) {
         var lines = ReadFile.readInputFileLines(fileName);
         List<Coord> coords = new ArrayList<>();
         long max = 0L;
@@ -26,31 +128,63 @@ public class Main02 {
             var coordsAsString = line.split(",");
             coords.add(new Coord(Integer.parseInt(coordsAsString[1]), Integer.parseInt(coordsAsString[0])));
         }
-        var isGreen = perimetre(coords);
-        System.out.println("Green coords size: " + isGreen.size());
-        Map<Coord, Boolean> memo = new HashMap<>();
-        for (Coord coord : coords) {
-            for (Coord otherCoord : coords) {
-                if (!coord.equals(otherCoord)) {
-                    long area = getRectangleArea(coord, otherCoord);
-                    if (area > max && allGreen(coord, otherCoord, coords, isGreen, memo)) {
-                        max = area;
-                    }
-                }
-            }
-        }
+        var isGreen = perimetre(coords, display);
+        Coord whiteRabbit = findWhiteRabbitUp(coords, isGreen);
+        findWhiteRabbitDown(coords, isGreen);
         System.out.println("Max area: " + max);
     }
 
 
-    private static boolean allGreen(Coord coord, Coord otherCoord, List<Coord> coords, Set<Coord> isGreen, Map<Coord, Boolean> memo) {
+    private static boolean allGreen(Coord coord, Coord otherCoord, List<Coord> coords, List<Coord> isGreen, Map<Coord, Boolean> memo) {
         return isGreen(new Coord(coord.i(), otherCoord.j()), coords, isGreen, memo)
                 && isGreen(new Coord(otherCoord.i(), coord.j()), coords, isGreen, memo)
                 && isGreen(new Coord(coord.i(), coord.j()), coords, isGreen, memo)
                 && isGreen(new Coord(otherCoord.i(), otherCoord.j()), coords, isGreen, memo);
     }
 
-    private static Set<Coord> perimetre(List<Coord> coords) {
+
+    public static List<Coord> orderOrthogonalPolygon(Set<Coord> points) {
+        List<Coord> ordered = new ArrayList<>();
+        Set<Coord> remaining = new HashSet<>(points);
+        Coord current = points.stream()
+                .min(Comparator.comparingInt(Coord::i).thenComparingInt(Coord::j))
+                .get();
+        ordered.add(current);
+        remaining.remove(current);
+
+        while (!remaining.isEmpty()) {
+            Coord finalCurrent = current;
+            Coord finalCurrent1 = current;
+            Coord next = remaining.stream()
+                    .filter(p -> (p.i() == finalCurrent.i() || p.j() == finalCurrent.j()))
+                    .min(Comparator.comparingInt(p -> Math.abs(p.i() - finalCurrent1.i()) + Math.abs(p.j() - finalCurrent1.j())))
+                    .orElse(null);
+            if (next == null) break;
+            ordered.add(next);
+            remaining.remove(next);
+            current = next;
+        }
+        return ordered;
+    }
+
+
+    public static boolean isInsidePolygon(List<Coord> polygon, Coord point) {
+        int intersections = 0;
+        for (int i = 0; i < polygon.size(); i++) {
+            Coord a = polygon.get(i);
+            Coord b = polygon.get((i + 1) % polygon.size());
+            // Teste si le segment [a,b] croise la ligne horizontale passant par point
+            if ((a.j() > point.j()) != (b.j() > point.j())) {
+                int xIntersect = a.i() + (point.j() - a.j()) * (b.i() - a.i()) / (b.j() - a.j());
+                if (xIntersect > point.i()) {
+                    intersections++;
+                }
+            }
+        }
+        return intersections % 2 == 1;
+    }
+
+    private static Set<Coord> perimetre(List<Coord> coords, boolean display) {
         int minI = coords.stream().mapToInt(Coord::i).min().getAsInt();
         int maxI = coords.stream().mapToInt(Coord::i).max().getAsInt();
         int minJ = coords.stream().mapToInt(Coord::j).min().getAsInt();
@@ -78,10 +212,30 @@ public class Main02 {
                 }
             }
         }
+
+        if(display) {
+            display(coords, maxI, maxJ, greenCoords);
+        }
         return greenCoords;
     }
 
-    private static boolean isGreen(Coord coord, List<Coord> coords, Set<Coord> isGreen, Map<Coord, Boolean> memo) {
+    private static void display(List<Coord> coords, int maxI, int maxJ, Set<Coord> greenCoords) {
+        for (int i = 0; i < maxI +1; i++) {
+
+            for (int j = 0; j < maxJ +1; j++) {
+                if (coords.contains(new Coord(i, j))) {
+                    System.out.print('#');
+                } else if (greenCoords.contains(new Coord(i, j))) {
+                    System.out.print('X');
+                } else {
+                    System.out.print('.');
+                }
+            }
+            System.out.println();
+        }
+    }
+
+    private static boolean isGreen(Coord coord, List<Coord> coords, List<Coord> isGreen, Map<Coord, Boolean> memo) {
         if (isGreen.contains(coord)) {
             return true;
         }
@@ -141,27 +295,43 @@ public class Main02 {
             return found;
         }
 
-        int intersect = 0;
-        int adjacentCount = 0;
-        for (int j = coord.j(); j > minJ - 2; j--) {
-            if (isGreen.contains(new Coord(coord.i(), j))) {
-                adjacentCount ++;
-                if(adjacentCount == 0){
-                    intersect++;
-                }
-            }
-            else{
-                if(adjacentCount>1){
-                    intersect++;
-                }
-                adjacentCount = 0;
-            }
-        }
-
-
-
-        memo.put(coord, intersect%2==1);
-        return intersect%2==1;
+//        int intersect = 0;
+//        int adjacentCount = 0;
+//        for (int j = coord.j(); j >= minJ-1; j--) {
+//            if (isGreen.contains(new Coord(coord.i(), j))) {
+//                adjacentCount ++;
+//                if(adjacentCount == 0){
+//                    intersect++;
+//                }
+//            }
+//            else{
+//                if(adjacentCount>1){
+//                    intersect++;
+//                }
+//                adjacentCount = 0;
+//            }
+//        }
+//
+//        for (int j = coord.j(); j >= minJ-1; j--) {
+//            if (isGreen.contains(new Coord(coord.i(), j))) {
+//                adjacentCount ++;
+//                if(adjacentCount == 0){
+//                    intersect++;
+//                }
+//            }
+//            else{
+//                if(adjacentCount>1){
+//                    intersect++;
+//                }
+//                adjacentCount = 0;
+//            }
+//        }
+//
+//
+//
+        boolean insidePolygon = isInsidePolygon(isGreen, coord);
+        memo.put(coord, insidePolygon);
+        return insidePolygon;
 
     }
 
