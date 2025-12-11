@@ -105,7 +105,6 @@ public class Main02 {
                 queue.add(edge.target);
             }
         }
-//        System.out.println(leaves.stream().mapToLong(NodeLight::getCostTotal).sum());
         return end.getCost();
     }
     private static void downStep(GraphLight graph, NodeLight start) {

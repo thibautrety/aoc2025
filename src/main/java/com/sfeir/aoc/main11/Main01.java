@@ -1,20 +1,11 @@
 package com.sfeir.aoc.main11;
 
-import com.sfeir.aoc.graph.Coord;
 import com.sfeir.aoc.graph.EdgeLight;
 import com.sfeir.aoc.graph.GraphLight;
-import com.sfeir.aoc.graph.Node;
 import com.sfeir.aoc.graph.NodeLight;
-import com.sfeir.aoc.utils.Command;
-import com.sfeir.aoc.utils.Machine;
 import com.sfeir.aoc.utils.ReadFile;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 public class Main01 {
